@@ -1,6 +1,7 @@
 package org.burgas
 
 import io.ktor.server.application.Application
+import org.burgas.database.configureDatabase
 import org.burgas.security.configureSecurity
 import org.burgas.serialization.configureSerialization
 
@@ -9,6 +10,7 @@ fun main(args: Array<String>) {
 }
 
 fun Application.modules() {
+    configureDatabase()
     configureSerialization()
     configureSecurity()
 }

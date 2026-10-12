@@ -1,7 +1,17 @@
 
 ktor:
   deployment:
+    host: 0.0.0.0
     port: 8000
   application:
     modules:
       - org.burgas.MainKt.modules
+
+postgres:
+  user: '${POSTGRES_USER:postgres}'
+  password: '${POSTGRES_PASSWORD:postgres}'
+  url: '${POSTGRES_URL:jdbc:postgresql://localhost:5000/smart-home-db}'
+
+redis:
+  host: '${REDIS_HOST:localhost}'
+  port: '${REDIS_PORT:6000}'

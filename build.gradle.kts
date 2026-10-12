@@ -33,6 +33,8 @@ dependencies {
     implementation("com.zaxxer:HikariCP:7.1.0")
     implementation("org.flywaydb:flyway-core:13.7.0")
     implementation("org.flywaydb:flyway-database-postgresql:13.7.0")
+    implementation("redis.clients:jedis:8.0.0-beta1")
+    implementation("org.mindrot:jbcrypt:0.4")
 
     testImplementation(kotlin("test"))
     testImplementation(ktorLibs.server.testHost)
