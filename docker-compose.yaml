@@ -1,0 +1,26 @@
+
+services:
+
+  postgres:
+    image: postgres:latest
+    container_name: smart-home-postgres
+    environment:
+      POSTGRES_DB: smart-home-db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5000:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql
+
+  redis:
+    image: redis:latest
+    container_name: smart-home-redis
+    ports:
+      - "6000:6379"
+    volumes:
+      - redis-data:/var/lib/redis/data
+
+volumes:
+  postgres-data:
+  redis-data:
