@@ -1,0 +1,7 @@
+
+ktor:
+  deployment:
+    port: 8000
+  application:
+    modules:
+      - org.burgas.MainKt.modules
