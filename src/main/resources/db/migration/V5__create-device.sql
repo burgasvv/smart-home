@@ -6,5 +6,6 @@ create table if not exists device (
     model varchar unique not null ,
     specifications text not null ,
     in_progress boolean not null default true ,
+    image_id uuid unique references image(id) on delete set null on update cascade ,
     created_at timestamp not null
 );
