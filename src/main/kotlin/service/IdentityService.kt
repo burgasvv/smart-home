@@ -17,11 +17,13 @@ import org.burgas.service.contract.UpdateService
 import org.jetbrains.exposed.v1.dao.load
 import org.jetbrains.exposed.v1.dao.with
 import org.jetbrains.exposed.v1.jdbc.transactions.suspendTransaction
+import org.mindrot.jbcrypt.BCrypt
 import java.sql.Connection
 import kotlin.uuid.Uuid
 
 class IdentityService : RedisCacheHandler<IdentityResponse>, CollectService<IdentityResponse>,
-    ReadService<Uuid, IdentityEntity>, FindService<Uuid, IdentityResponse>, CreateService<IdentityRequest, IdentityResponse>,
+    ReadService<Uuid, IdentityEntity>, FindService<Uuid, IdentityResponse>,
+    CreateService<IdentityRequest, IdentityResponse>,
     UpdateService<IdentityRequest, IdentityResponse>, DeleteService<Uuid> {
 
     private val redis = DatabaseConnection.redis
@@ -95,6 +97,24 @@ class IdentityService : RedisCacheHandler<IdentityResponse>, CollectService<Iden
         val identityEntity = readEntity(id)
         handleCache(identityEntity.toResponse())
         identityEntity.delete()
+    }
+
+    suspend fun changePassword(request: IdentityRequest) = suspendTransaction(
+        db = DatabaseConnection.postgres, transactionIsolation = Connection.TRANSACTION_READ_COMMITTED
+    ) {
+        val identityEntity = readEntity(request.id!!)
+        require(!BCrypt.checkpw(request.password!!, identityEntity.password)) { "Old and new passwords matched" }
+        identityEntity.password = BCrypt.hashpw(request.password, BCrypt.gensalt())
+        handleCache(identityEntity.toResponse())
+    }
+
+    suspend fun changeStatus(request: IdentityRequest) = suspendTransaction(
+        db = DatabaseConnection.postgres, transactionIsolation = Connection.TRANSACTION_READ_COMMITTED
+    ) {
+        val identityEntity = readEntity(request.id!!)
+        require(identityEntity.status != request.status!!) { "Old and new statuses matched" }
+        identityEntity.status = request.status
+        handleCache(identityEntity.toResponse())
     }
 
     suspend fun uploadImage(id: Uuid, multiPartData: MultiPartData) = suspendTransaction(
