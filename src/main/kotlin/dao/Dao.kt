@@ -1,21 +1,66 @@
 package org.burgas.dao
 
+import io.ktor.http.content.*
+import io.ktor.utils.io.*
+import kotlinx.datetime.toKotlinLocalDateTime
+import kotlinx.io.readByteArray
 import org.burgas.database.*
+import org.burgas.dto.*
 import org.jetbrains.exposed.v1.core.dao.id.EntityID
+import org.jetbrains.exposed.v1.core.statements.api.ExposedBlob
 import org.jetbrains.exposed.v1.dao.UuidEntity
 import org.jetbrains.exposed.v1.dao.UuidEntityClass
+import org.mindrot.jbcrypt.BCrypt
+import java.time.LocalDateTime
 import kotlin.uuid.Uuid
 
-class ImageEntity(id: EntityID<Uuid>) : UuidEntity(id) {
+interface File
+
+interface Dao
+
+interface Uploader {
+    fun upload(fileItem: PartData.FileItem)
+}
+
+interface Creator<in R : Request> {
+    suspend fun create(request: R)
+}
+
+interface Modifier<in R : Request> {
+    suspend fun update(request: R)
+}
+
+interface DependencyMapper<out D : Dependency> {
+    suspend fun toDependency(): D
+}
+
+interface ResponseMapper<out R : Response> {
+    suspend fun toResponse(): R
+}
+
+class ImageEntity(id: EntityID<Uuid>) : UuidEntity(id), Dao, File, Uploader, DependencyMapper<ImageDependency> {
     companion object : UuidEntityClass<ImageEntity>(ImageTable)
 
     var name by ImageTable.name
     var contentType by ImageTable.contentType
     var data by ImageTable.data
     var createdAt by ImageTable.createdAt
+
+    @OptIn(InternalAPI::class)
+    override fun upload(fileItem: PartData.FileItem) {
+        name = fileItem.originalFileName
+        contentType = "${fileItem.contentType!!.contentType}/${fileItem.contentType!!.contentSubtype}"
+        data = ExposedBlob(fileItem.provider().readBuffer.readByteArray())
+        createdAt = LocalDateTime.now().toKotlinLocalDateTime()
+    }
+
+    override suspend fun toDependency(): ImageDependency {
+        return ImageDependency(id.value, name, contentType, createdAt)
+    }
 }
 
-class IdentityEntity(id: EntityID<Uuid>) : UuidEntity(id) {
+class IdentityEntity(id: EntityID<Uuid>) : UuidEntity(id), Dao, Creator<IdentityRequest>, Modifier<IdentityRequest>,
+    DependencyMapper<IdentityDependency>, ResponseMapper<IdentityResponse> {
     companion object : UuidEntityClass<IdentityEntity>(IdentityTable)
 
     var authority by IdentityTable.authority
@@ -28,27 +73,100 @@ class IdentityEntity(id: EntityID<Uuid>) : UuidEntity(id) {
     var image by ImageEntity.optionalReferencedOn(IdentityTable.imageId)
     var createdAt by IdentityTable.createdAt
     var devices by DeviceEntity.via(IdentityDeviceTable.identityId, IdentityDeviceTable.deviceId)
+
+    override suspend fun create(request: IdentityRequest) {
+        request.authority!!.let { authority = it }
+        request.email.takeIf { !it.isNullOrEmpty() }!!.let { email = it }
+        request.password.takeIf { !it.isNullOrEmpty() }!!.let { password = BCrypt.hashpw(it, BCrypt.gensalt()) }
+        request.status?.let { status = it }
+        request.firstname.takeIf { !it.isNullOrEmpty() }!!.let { firstname = it }
+        request.lastname.takeIf { !it.isNullOrEmpty() }!!.let { lastname = it }
+        request.patronymic.takeIf { !it.isNullOrEmpty() }!!.let { patronymic = it }
+        createdAt = LocalDateTime.now().toKotlinLocalDateTime()
+    }
+
+    override suspend fun update(request: IdentityRequest) {
+        request.authority?.let { authority = it }
+        request.email.takeIf { !it.isNullOrEmpty() }?.let { email = it }
+        request.firstname.takeIf { !it.isNullOrEmpty() }?.let { firstname = it }
+        request.lastname.takeIf { !it.isNullOrEmpty() }?.let { lastname = it }
+        request.patronymic.takeIf { !it.isNullOrEmpty() }?.let { patronymic = it }
+    }
+
+    override suspend fun toDependency(): IdentityDependency {
+        return IdentityDependency(
+            id.value, authority, email, status, firstname, lastname, patronymic, image?.toDependency(), createdAt
+        )
+    }
+
+    override suspend fun toResponse(): IdentityResponse {
+        return IdentityResponse(
+            id.value, authority, email, status, firstname, lastname, patronymic, image?.toDependency(), createdAt,
+            devices.map { it.toDependency() }
+        )
+    }
 }
 
-class CategoryEntity(id: EntityID<Uuid>) : UuidEntity(id) {
+class CategoryEntity(id: EntityID<Uuid>) : UuidEntity(id), Dao, Creator<CategoryRequest>, Modifier<CategoryRequest>,
+    DependencyMapper<CategoryDependency>, ResponseMapper<CategoryResponse> {
     companion object : UuidEntityClass<CategoryEntity>(CategoryTable)
 
     var name by CategoryTable.name
     var description by CategoryTable.description
     var createdAt by CategoryTable.createdAt
     val devices by DeviceEntity.optionalReferrersOn(DeviceTable.categoryId)
+
+    override suspend fun create(request: CategoryRequest) {
+        request.name.takeIf { !it.isNullOrEmpty() }!!.let { name = it }
+        request.description.takeIf { !it.isNullOrEmpty() }!!.let { description = it }
+        createdAt = LocalDateTime.now().toKotlinLocalDateTime()
+    }
+
+    override suspend fun update(request: CategoryRequest) {
+        request.name.takeIf { !it.isNullOrEmpty() }?.let { name = it }
+        request.description.takeIf { !it.isNullOrEmpty() }?.let { description = it }
+    }
+
+    override suspend fun toDependency(): CategoryDependency {
+        return CategoryDependency(id.value, name, description, createdAt)
+    }
+
+    override suspend fun toResponse(): CategoryResponse {
+        return CategoryResponse(id.value, name, description, createdAt, devices.map { it.toDependency() })
+    }
 }
 
-class BrandEntity(id: EntityID<Uuid>) : UuidEntity(id) {
+class BrandEntity(id: EntityID<Uuid>) : UuidEntity(id), Dao, Creator<BrandRequest>, Modifier<BrandRequest>,
+    DependencyMapper<BrandDependency>, ResponseMapper<BrandResponse> {
     companion object : UuidEntityClass<BrandEntity>(BrandTable)
 
     var name by BrandTable.name
     var description by BrandTable.description
     var createdAt by BrandTable.createdAt
     val devices by DeviceEntity.optionalReferrersOn(DeviceTable.brandId)
+
+    override suspend fun create(request: BrandRequest) {
+        request.name.takeIf { !it.isNullOrEmpty() }!!.let { name = it }
+        request.description.takeIf { !it.isNullOrEmpty() }!!.let { description = it }
+        createdAt = LocalDateTime.now().toKotlinLocalDateTime()
+    }
+
+    override suspend fun update(request: BrandRequest) {
+        request.name.takeIf { !it.isNullOrEmpty() }?.let { name = it }
+        request.description.takeIf { !it.isNullOrEmpty() }?.let { description = it }
+    }
+
+    override suspend fun toDependency(): BrandDependency {
+        return BrandDependency(id.value, name, description, createdAt)
+    }
+
+    override suspend fun toResponse(): BrandResponse {
+        return BrandResponse(id.value, name, description, createdAt, devices.map { it.toDependency() })
+    }
 }
 
-class DeviceEntity(id: EntityID<Uuid>) : UuidEntity(id) {
+class DeviceEntity(id: EntityID<Uuid>) : UuidEntity(id), Dao, Creator<DeviceRequest>, Modifier<DeviceRequest>,
+    DependencyMapper<DeviceDependency>, ResponseMapper<DeviceResponse> {
     companion object : UuidEntityClass<DeviceEntity>(DeviceTable)
 
     var category by CategoryEntity.optionalReferencedOn(DeviceTable.categoryId)
@@ -59,4 +177,35 @@ class DeviceEntity(id: EntityID<Uuid>) : UuidEntity(id) {
     var image by ImageEntity.optionalReferencedOn(DeviceTable.imageId)
     var createdAt by DeviceTable.createdAt
     var identities by IdentityEntity.via(IdentityDeviceTable.deviceId, IdentityDeviceTable.identityId)
+
+    override suspend fun create(request: DeviceRequest) {
+        request.categoryId!!.let { category = CategoryEntity[it] }
+        request.brandId!!.let { brand = BrandEntity[it] }
+        request.model.takeIf { !it.isNullOrEmpty() }!!.let { model = it }
+        request.specifications.takeIf { !it.isNullOrEmpty() }!!.let { specifications = it }
+        request.inProgress?.let { inProgress = it }
+        createdAt = LocalDateTime.now().toKotlinLocalDateTime()
+    }
+
+    override suspend fun update(request: DeviceRequest) {
+        request.categoryId?.let { category = CategoryEntity[it] }
+        request.brandId?.let { brand = BrandEntity[it] }
+        request.model.takeIf { !it.isNullOrEmpty() }?.let { model = it }
+        request.specifications.takeIf { !it.isNullOrEmpty() }?.let { specifications = it }
+        request.inProgress?.let { inProgress = it }
+    }
+
+    override suspend fun toDependency(): DeviceDependency {
+        return DeviceDependency(
+            id.value, category?.toDependency(), brand?.toDependency(),
+            model, specifications, inProgress, image?.toDependency(), createdAt
+        )
+    }
+
+    override suspend fun toResponse(): DeviceResponse {
+        return DeviceResponse(
+            id.value, category?.toDependency(), brand?.toDependency(),
+            model, specifications, inProgress, image?.toDependency(), createdAt, identities.map { it.toDependency() }
+        )
+    }
 }
