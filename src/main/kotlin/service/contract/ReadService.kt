@@ -1,9 +1,8 @@
 package org.burgas.service.contract
 
-import org.burgas.dao.Dao
-import org.burgas.dao.File
+import org.jetbrains.exposed.v1.dao.UuidEntity
 
-interface ReadService<in ID, out E> where E : Dao, E : File {
+interface ReadService<in ID, out E : UuidEntity> {
 
     suspend fun readEntity(id: ID): E
 }

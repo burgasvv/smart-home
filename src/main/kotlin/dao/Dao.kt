@@ -23,11 +23,11 @@ interface Uploader {
 }
 
 interface Creator<in R : Request> {
-    suspend fun create(request: R)
+    fun create(request: R)
 }
 
 interface Modifier<in R : Request> {
-    suspend fun update(request: R)
+    fun update(request: R)
 }
 
 interface DependencyMapper<out D : Dependency> {
@@ -38,7 +38,7 @@ interface ResponseMapper<out R : Response> {
     suspend fun toResponse(): R
 }
 
-class ImageEntity(id: EntityID<Uuid>) : UuidEntity(id), Dao, File, Uploader, DependencyMapper<ImageDependency> {
+class ImageEntity(id: EntityID<Uuid>) : UuidEntity(id), File, Uploader, DependencyMapper<ImageDependency> {
     companion object : UuidEntityClass<ImageEntity>(ImageTable)
 
     var name by ImageTable.name
@@ -74,7 +74,7 @@ class IdentityEntity(id: EntityID<Uuid>) : UuidEntity(id), Dao, Creator<Identity
     var createdAt by IdentityTable.createdAt
     var devices by DeviceEntity.via(IdentityDeviceTable.identityId, IdentityDeviceTable.deviceId)
 
-    override suspend fun create(request: IdentityRequest) {
+    override fun create(request: IdentityRequest) {
         request.authority!!.let { authority = it }
         request.email.takeIf { !it.isNullOrEmpty() }!!.let { email = it }
         request.password.takeIf { !it.isNullOrEmpty() }!!.let { password = BCrypt.hashpw(it, BCrypt.gensalt()) }
@@ -85,7 +85,7 @@ class IdentityEntity(id: EntityID<Uuid>) : UuidEntity(id), Dao, Creator<Identity
         createdAt = LocalDateTime.now().toKotlinLocalDateTime()
     }
 
-    override suspend fun update(request: IdentityRequest) {
+    override fun update(request: IdentityRequest) {
         request.authority?.let { authority = it }
         request.email.takeIf { !it.isNullOrEmpty() }?.let { email = it }
         request.firstname.takeIf { !it.isNullOrEmpty() }?.let { firstname = it }
@@ -116,13 +116,13 @@ class CategoryEntity(id: EntityID<Uuid>) : UuidEntity(id), Dao, Creator<Category
     var createdAt by CategoryTable.createdAt
     val devices by DeviceEntity.optionalReferrersOn(DeviceTable.categoryId)
 
-    override suspend fun create(request: CategoryRequest) {
+    override fun create(request: CategoryRequest) {
         request.name.takeIf { !it.isNullOrEmpty() }!!.let { name = it }
         request.description.takeIf { !it.isNullOrEmpty() }!!.let { description = it }
         createdAt = LocalDateTime.now().toKotlinLocalDateTime()
     }
 
-    override suspend fun update(request: CategoryRequest) {
+    override fun update(request: CategoryRequest) {
         request.name.takeIf { !it.isNullOrEmpty() }?.let { name = it }
         request.description.takeIf { !it.isNullOrEmpty() }?.let { description = it }
     }
@@ -145,13 +145,13 @@ class BrandEntity(id: EntityID<Uuid>) : UuidEntity(id), Dao, Creator<BrandReques
     var createdAt by BrandTable.createdAt
     val devices by DeviceEntity.optionalReferrersOn(DeviceTable.brandId)
 
-    override suspend fun create(request: BrandRequest) {
+    override fun create(request: BrandRequest) {
         request.name.takeIf { !it.isNullOrEmpty() }!!.let { name = it }
         request.description.takeIf { !it.isNullOrEmpty() }!!.let { description = it }
         createdAt = LocalDateTime.now().toKotlinLocalDateTime()
     }
 
-    override suspend fun update(request: BrandRequest) {
+    override fun update(request: BrandRequest) {
         request.name.takeIf { !it.isNullOrEmpty() }?.let { name = it }
         request.description.takeIf { !it.isNullOrEmpty() }?.let { description = it }
     }
@@ -178,7 +178,7 @@ class DeviceEntity(id: EntityID<Uuid>) : UuidEntity(id), Dao, Creator<DeviceRequ
     var createdAt by DeviceTable.createdAt
     var identities by IdentityEntity.via(IdentityDeviceTable.deviceId, IdentityDeviceTable.identityId)
 
-    override suspend fun create(request: DeviceRequest) {
+    override fun create(request: DeviceRequest) {
         request.categoryId!!.let { category = CategoryEntity[it] }
         request.brandId!!.let { brand = BrandEntity[it] }
         request.model.takeIf { !it.isNullOrEmpty() }!!.let { model = it }
@@ -187,7 +187,7 @@ class DeviceEntity(id: EntityID<Uuid>) : UuidEntity(id), Dao, Creator<DeviceRequ
         createdAt = LocalDateTime.now().toKotlinLocalDateTime()
     }
 
-    override suspend fun update(request: DeviceRequest) {
+    override fun update(request: DeviceRequest) {
         request.categoryId?.let { category = CategoryEntity[it] }
         request.brandId?.let { brand = BrandEntity[it] }
         request.model.takeIf { !it.isNullOrEmpty() }?.let { model = it }

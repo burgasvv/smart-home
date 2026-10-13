@@ -2,6 +2,9 @@ package org.burgas.database
 
 import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
+import io.ktor.server.application.Application
+import io.ktor.server.application.createApplicationPlugin
+import io.ktor.server.application.install
 import io.ktor.server.config.*
 import org.flywaydb.core.Flyway
 import org.jetbrains.exposed.v1.core.DatabaseConfig
@@ -52,8 +55,11 @@ fun runMigration(dataSource: HikariDataSource) {
     flyway.migrate()
 }
 
-fun configureDatabase() {
-    runMigration(DatabaseConnection.dataSource)
+fun Application.configureDatabase() {
+    val runMigrationPlugin = createApplicationPlugin("RunMigrationPlugin") {
+        runMigration(DatabaseConnection.dataSource)
+    }
+    install(runMigrationPlugin)
 }
 
 object ImageTable : UuidTable("image") {
