@@ -25,6 +25,8 @@ dependencies {
     implementation(ktorLibs.server.statusPages)
     implementation(ktorLibs.server.sessions)
     implementation(ktorLibs.server.doubleReceive)
+    implementation(ktorLibs.server.csrf)
+    implementation(ktorLibs.server.auth)
     implementation("org.jetbrains.exposed:exposed-core:1.5.0")
     implementation("org.jetbrains.exposed:exposed-jdbc:1.5.0")
     implementation("org.jetbrains.exposed:exposed-dao:1.5.0")

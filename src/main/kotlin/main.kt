@@ -4,6 +4,7 @@ import io.ktor.server.application.Application
 import org.burgas.database.configureDatabase
 import org.burgas.koin.configureKoin
 import org.burgas.router.configureImageRouter
+import org.burgas.router.configureSecurityRouter
 import org.burgas.security.configureSecurity
 import org.burgas.serialization.configureSerialization
 
@@ -17,5 +18,6 @@ fun Application.modules() {
     configureSecurity()
     configureKoin()
 
+    configureSecurityRouter()
     configureImageRouter()
 }

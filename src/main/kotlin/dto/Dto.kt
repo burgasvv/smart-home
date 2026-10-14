@@ -25,6 +25,18 @@ data class ExceptionResponse(
 )
 
 @Serializable
+data class AuthSession(
+    val id: Uuid,
+    val authority: Authority
+)
+
+@Serializable
+data class AuthData(
+    val email: String,
+    val password: String
+)
+
+@Serializable
 data class ImageDependency(
     override val id: Uuid,
     val name: String?,
