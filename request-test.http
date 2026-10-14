@@ -1,0 +1,73 @@
+
+
+
+### Security Requests
+
+
+
+###
+POST /api/v1/security/login
+Host: localhost:8000
+Origin: http://localhost:8000
+Content-Type: application/json
+
+{
+    "email": "burgasvv@gmail.com",
+    "password": "burgasvv"
+}
+
+###
+POST /api/v1/security/logout
+Host: localhost:8000
+Origin: http://localhost:8000
+
+
+
+### Identity Requests
+
+
+
+###
+GET /api/v1/identities
+Host: localhost:8000
+
+###
+GET /api/v1/identities/by-id?identityId=2f0ade39-17cb-49d3-bc7f-fbc89972312a
+Host: localhost:8000
+
+###
+POST /api/v1/identities/create
+Host: localhost:8000
+Origin: http://localhost:8000
+Content-Type: application/json
+
+{
+    "authority": "ADMIN",
+    "email": "burgasvv@gmail.com",
+    "password": "burgasvv",
+    "firstname": "Бургас",
+    "lastname": "Вячеслав",
+    "patronymic": "Васильевич"
+}
+
+###
+PUT /api/v1/identities/update
+Host: localhost:8000
+Origin: http://localhost:8000
+Content-Type: application/json
+
+{
+    "id": "2f0ade39-17cb-49d3-bc7f-fbc89972312a",
+    "authority": "ADMIN"
+}
+
+###
+PUT /api/v1/identities/change-password
+Host: localhost:8000
+Origin: http://localhost:8000
+Content-Type: application/json
+
+{
+    "id": "2f0ade39-17cb-49d3-bc7f-fbc89972312a",
+    "password": "burgasvv"
+}
