@@ -134,6 +134,14 @@ class CategoryEntity(id: EntityID<Uuid>) : UuidEntity(id), Dao, Creator<Category
     override suspend fun toResponse(): CategoryResponse {
         return CategoryResponse(id.value, name, description, createdAt, devices.map { it.toDependency() })
     }
+
+    suspend fun toResponse(identityId: Uuid): CategoryResponse {
+        return CategoryResponse(
+            id.value, name, description, createdAt,
+            devices.filter { deviceEntity -> deviceEntity.identities.map { it.id.value }.contains(identityId) }
+                .map { it.toDependency() }
+        )
+    }
 }
 
 class BrandEntity(id: EntityID<Uuid>) : UuidEntity(id), Dao, Creator<BrandRequest>, Modifier<BrandRequest>,
@@ -162,6 +170,14 @@ class BrandEntity(id: EntityID<Uuid>) : UuidEntity(id), Dao, Creator<BrandReques
 
     override suspend fun toResponse(): BrandResponse {
         return BrandResponse(id.value, name, description, createdAt, devices.map { it.toDependency() })
+    }
+
+    suspend fun toResponse(identityId: Uuid): BrandResponse {
+        return BrandResponse(
+            id.value, name, description, createdAt,
+            devices.filter { deviceEntity -> deviceEntity.identities.map { it.id.value }.contains(identityId) }
+                .map { it.toDependency() }
+        )
     }
 }
 

@@ -51,6 +51,21 @@ Content-Type: application/json
 }
 
 ###
+POST /api/v1/identities/create
+Host: localhost:8000
+Origin: http://localhost:8000
+Content-Type: application/json
+
+{
+    "authority": "ADMIN",
+    "email": "zagor@gmail.com",
+    "password": "zagor",
+    "firstname": "Загорулько",
+    "lastname": "Борис",
+    "patronymic": "Юрьевич"
+}
+
+###
 PUT /api/v1/identities/update
 Host: localhost:8000
 Origin: http://localhost:8000
@@ -70,4 +85,40 @@ Content-Type: application/json
 {
     "id": "2f0ade39-17cb-49d3-bc7f-fbc89972312a",
     "password": "burgasvv"
+}
+
+
+
+### Category Requests
+
+
+
+###
+GET /api/v1/categories
+Host: localhost:8000
+
+###
+GET /api/v1/categories/by-id?categoryId=f555a493-3579-4af7-bfdc-b4150da131ea
+Host: localhost:8000
+
+###
+POST /api/v1/categories/create
+Host: localhost:8000
+Origin: http://localhost:8000
+Content-Type: application/json
+
+{
+    "name": "Умная лампочка",
+    "description": "Описание категории Умная лампочка"
+}
+
+###
+PUT /api/v1/categories/update
+Host: localhost:8000
+Origin: http://localhost:8000
+Content-Type: application/json
+
+{
+    "id": "f555a493-3579-4af7-bfdc-b4150da131ea",
+    "description": "Описание категории Умная лампочка и светодиодные приборы"
 }
