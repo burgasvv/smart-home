@@ -3,6 +3,7 @@ package org.burgas
 import io.ktor.server.application.Application
 import org.burgas.database.configureDatabase
 import org.burgas.koin.configureKoin
+import org.burgas.router.configureBrandRouter
 import org.burgas.router.configureCategoryRouter
 import org.burgas.router.configureIdentityRouter
 import org.burgas.router.configureImageRouter
@@ -24,4 +25,5 @@ fun Application.modules() {
     configureImageRouter()
     configureIdentityRouter()
     configureCategoryRouter()
+    configureBrandRouter()
 }

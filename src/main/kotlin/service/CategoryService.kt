@@ -43,4 +43,10 @@ class CategoryService : ReadService<Uuid, CategoryEntity> {
         CategoryEntity.findByIdAndUpdate(req.id!!) { it.update(req) }!!.load(CategoryEntity::devices)
             .toResponse(identityId)
     }
+
+    suspend fun delete(categoryId: Uuid) = suspendTransaction(
+        db = DatabaseConnection.postgres, transactionIsolation = Connection.TRANSACTION_READ_COMMITTED
+    ) {
+        readEntity(categoryId).delete()
+    }
 }

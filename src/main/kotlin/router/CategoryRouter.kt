@@ -54,6 +54,12 @@ fun Application.configureCategoryRouter() {
                         categoryService.updateWithIdentityId(categoryRequest, authSession.id)
                     )
                 }
+
+                delete("/delete") {
+                    val categoryId = Uuid.parse(call.parameters["categoryId"]!!)
+                    categoryService.delete(categoryId)
+                    call.respond(HttpStatusCode.OK)
+                }
             }
         }
     }

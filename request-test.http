@@ -122,3 +122,39 @@ Content-Type: application/json
     "id": "f555a493-3579-4af7-bfdc-b4150da131ea",
     "description": "Описание категории Умная лампочка и светодиодные приборы"
 }
+
+
+
+### Brand Requests
+
+
+
+###
+GET /api/v1/brands
+Host: localhost:8000
+
+###
+GET /api/v1/brands/by-id?brandId=27febd49-7fb3-4772-b5f2-670dab1c174a
+Host: localhost:8000
+
+###
+POST /api/v1/brands/create
+Host: localhost:8000
+Origin: http://localhost:8000
+Content-Type: application/json
+
+{
+    "name": "Yandex",
+    "description": "Описание бренда Yandex Technologies"
+}
+
+###
+PUT /api/v1/brands/update
+Host: localhost:8000
+Origin: http://localhost:8000
+Content-Type: application/json
+
+{
+    "id": "27febd49-7fb3-4772-b5f2-670dab1c174a",
+    "description": "Описание бренда Yandex"
+}
