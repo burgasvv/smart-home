@@ -28,9 +28,11 @@ class IdentityService : RedisCacheHandler<IdentityResponse>, CollectService<Iden
 
     private val redis = DatabaseConnection.redis
     private val imageService: ImageService
+    private val deviceService: DeviceService
 
-    constructor(imageService: ImageService) {
+    constructor(imageService: ImageService, deviceService: DeviceService) {
         this.imageService = imageService
+        this.deviceService = deviceService
     }
 
     override suspend fun handleCache(response: IdentityResponse) {
@@ -95,8 +97,9 @@ class IdentityService : RedisCacheHandler<IdentityResponse>, CollectService<Iden
         db = DatabaseConnection.postgres, transactionIsolation = Connection.TRANSACTION_READ_COMMITTED
     ) {
         val identityEntity = readEntity(id)
-        handleCache(identityEntity.toResponse())
+        identityEntity.image?.delete()
         identityEntity.delete()
+        handleCache(identityEntity.toResponse())
     }
 
     suspend fun changePassword(request: IdentityRequest) = suspendTransaction(

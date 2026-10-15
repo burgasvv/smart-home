@@ -136,6 +136,7 @@ data class DeviceRequest(
     override val id: Uuid?,
     val categoryId: Uuid?,
     val brandId: Uuid?,
+    val identityId: Uuid?,
     val model: String?,
     val specifications: String?,
     val inProgress: Boolean?

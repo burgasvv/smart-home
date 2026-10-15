@@ -158,3 +158,28 @@ Content-Type: application/json
     "id": "27febd49-7fb3-4772-b5f2-670dab1c174a",
     "description": "Описание бренда Yandex"
 }
+
+
+
+### Device Requests
+
+
+
+###
+GET /api/v1/devices/by-id?deviceId=9503baf1-46bd-4d1f-8f11-c529a79a0287
+Host: localhost:8000
+
+###
+POST /api/v1/devices/create
+Host: localhost:8000
+Origin: http://localhost:8000
+Content-Type: application/json
+
+{
+    "categoryId": "f555a493-3579-4af7-bfdc-b4150da131ea",
+    "brandId": "27febd49-7fb3-4772-b5f2-670dab1c174a",
+    "identityId": "2f0ade39-17cb-49d3-bc7f-fbc89972312a",
+    "model": "M5-V6",
+    "specifications": "Спецификации и характеристики умной лампочки M5-V6",
+    "inProgress": true
+}
