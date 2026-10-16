@@ -183,3 +183,14 @@ Content-Type: application/json
     "specifications": "Спецификации и характеристики умной лампочки M5-V6",
     "inProgress": true
 }
+
+###
+PUT /api/v1/devices/update
+Host: localhost:8000
+Origin: http://localhost:8000
+Content-Type: application/json
+
+{
+    "id": "9503baf1-46bd-4d1f-8f11-c529a79a0287",
+    "port": 54433
+}

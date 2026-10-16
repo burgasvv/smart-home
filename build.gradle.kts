@@ -27,6 +27,8 @@ dependencies {
     implementation(ktorLibs.server.doubleReceive)
     implementation(ktorLibs.server.csrf)
     implementation(ktorLibs.server.auth)
+    implementation(ktorLibs.client.core)
+    implementation(ktorLibs.client.cio)
     implementation("org.jetbrains.exposed:exposed-core:1.5.0")
     implementation("org.jetbrains.exposed:exposed-jdbc:1.5.0")
     implementation("org.jetbrains.exposed:exposed-dao:1.5.0")
@@ -39,6 +41,7 @@ dependencies {
     implementation("org.mindrot:jbcrypt:0.4")
     implementation("io.insert-koin:koin-ktor:4.2.2")
     implementation("io.insert-koin:koin-logger-slf4j:4.2.2")
+    implementation("io.ktor:ktor-network:3.6.0")
 
     testImplementation(kotlin("test"))
     testImplementation(ktorLibs.server.testHost)

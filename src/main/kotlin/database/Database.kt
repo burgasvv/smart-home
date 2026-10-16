@@ -52,6 +52,7 @@ fun runMigration(dataSource: HikariDataSource) {
         .baselineOnMigrate(true)
         .locations("classpath:db/migration")
         .load()
+    flyway.repair()
     flyway.migrate()
 }
 
@@ -116,6 +117,8 @@ object DeviceTable : UuidTable("device") {
         name = "image_id", refColumn = ImageTable.id,
         onDelete = ReferenceOption.SET_NULL, onUpdate = ReferenceOption.CASCADE
     )
+    val ipAddress = varchar("ip_address", 250).uniqueIndex().nullable()
+    val port = integer("port").nullable()
     val createdAt = datetime("created_at").defaultExpression(CurrentDateTime)
 }
 

@@ -139,7 +139,9 @@ data class DeviceRequest(
     val identityId: Uuid?,
     val model: String?,
     val specifications: String?,
-    val inProgress: Boolean?
+    val inProgress: Boolean?,
+    val ipAddress: String?,
+    val port: Int?
 ) : Request
 
 @Serializable
@@ -150,6 +152,8 @@ data class DeviceDependency(
     val model: String,
     val specifications: String,
     val inProgress: Boolean,
+    val ipAddress: String?,
+    val port: Int?,
     val image: ImageDependency?,
     val createdAt: LocalDateTime
 ) : Dependency
@@ -162,6 +166,8 @@ data class DeviceResponse(
     val model: String,
     val specifications: String,
     val inProgress: Boolean,
+    val ipAddress: String?,
+    val port: Int?,
     val image: ImageDependency?,
     val createdAt: LocalDateTime,
     val identities: List<IdentityDependency>
