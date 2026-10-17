@@ -217,3 +217,39 @@ Content-Type: application/json
 POST /api/v1/xiaomi/toggle?deviceId=9503baf1-46bd-4d1f-8f11-c529a79a0287
 Host: localhost:8000
 Origin: http://localhost:8000
+
+###
+POST /api/v1/xiaomi/bright?deviceId=9503baf1-46bd-4d1f-8f11-c529a79a0287
+Host: localhost:8000
+Origin: http://localhost:8000
+Content-Type: application/json
+
+{
+    "bright": 100,
+    "type": "smooth",
+    "strength": 500
+}
+
+###
+POST /api/v1/xiaomi/temperature?deviceId=9503baf1-46bd-4d1f-8f11-c529a79a0287
+Host: localhost:8000
+Origin: http://localhost:8000
+Content-Type: application/json
+
+{
+    "temperature": 5000,
+    "type": "smooth",
+    "strength": 500
+}
+
+###
+POST /api/v1/xiaomi/rgb?deviceId=9503baf1-46bd-4d1f-8f11-c529a79a0287
+Host: localhost:8000
+Origin: http://localhost:8000
+Content-Type: application/json
+
+{
+    "color": 4915330,
+    "type": "smooth",
+    "strength": 500
+}

@@ -36,6 +36,30 @@ fun Application.configureXiaomiRouter() {
                 xiaomiService.toggle(deviceResponse.ipAddress!!, deviceResponse.token!!)
                 call.respond(HttpStatusCode.OK)
             }
+
+            post("/bright") {
+                val deviceId = Uuid.parse(call.parameters["deviceId"]!!)
+                val deviceResponse = deviceService.findById(deviceId)
+                val jsonObject = call.receive<JsonObject>()
+                xiaomiService.setBright(deviceResponse.ipAddress!!, deviceResponse.token!!, jsonObject)
+                call.respond(HttpStatusCode.OK)
+            }
+
+            post("/temperature") {
+                val deviceId = Uuid.parse(call.parameters["deviceId"]!!)
+                val deviceResponse = deviceService.findById(deviceId)
+                val jsonObject = call.receive<JsonObject>()
+                xiaomiService.setTemperature(deviceResponse.ipAddress!!, deviceResponse.token!!, jsonObject)
+                call.respond(HttpStatusCode.OK)
+            }
+
+            post("/rgb") {
+                val deviceId = Uuid.parse(call.parameters["deviceId"]!!)
+                val deviceResponse = deviceService.findById(deviceId)
+                val jsonObject = call.receive<JsonObject>()
+                xiaomiService.setRgb(deviceResponse.ipAddress!!, deviceResponse.token!!, jsonObject)
+                call.respond(HttpStatusCode.OK)
+            }
         }
     }
 }

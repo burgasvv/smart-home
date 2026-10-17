@@ -1,12 +1,6 @@
 package org.burgas.service
 
-import kotlinx.serialization.json.JsonObject
-import kotlinx.serialization.json.add
-import kotlinx.serialization.json.boolean
-import kotlinx.serialization.json.buildJsonArray
-import kotlinx.serialization.json.int
-import kotlinx.serialization.json.jsonPrimitive
-import kotlinx.serialization.json.put
+import kotlinx.serialization.json.*
 import org.burgas.client.XiaomiMiIoClient
 
 class XiaomiYeelightService {
@@ -31,6 +25,51 @@ class XiaomiYeelightService {
             put("id", 1)
             put("method", "toggle")
             put("params", buildJsonArray {  })
+        }
+    }
+
+    suspend fun setBright(ipAddress: String, token: String, jsonObject: JsonObject) {
+        val bright = jsonObject["bright"]!!.jsonPrimitive.int
+        val type = jsonObject["type"]?.jsonPrimitive?.content
+        val strength = jsonObject["strength"]?.jsonPrimitive?.int
+        XiaomiMiIoClient.sendCommand(ipAddress, token) {
+            put("id", 1)
+            put("method", "set_bright")
+            put("params", buildJsonArray {
+                add(bright)
+                add(type)
+                add(strength)
+            })
+        }
+    }
+
+    suspend fun setTemperature(ipAddress: String, token: String, jsonObject: JsonObject) {
+        val temperature = jsonObject["temperature"]!!.jsonPrimitive.int
+        val type = jsonObject["type"]?.jsonPrimitive?.content
+        val strength = jsonObject["strength"]?.jsonPrimitive?.int
+        XiaomiMiIoClient.sendCommand(ipAddress, token) {
+            put("id", 1)
+            put("method", "set_ct_abx")
+            put("params", buildJsonArray {
+                add(temperature)
+                add(type)
+                add(strength)
+            })
+        }
+    }
+
+    suspend fun setRgb(ipAddress: String, token: String, jsonObject: JsonObject) {
+        val color = jsonObject["color"]!!.jsonPrimitive.int
+        val type = jsonObject["type"]?.jsonPrimitive?.content
+        val strength = jsonObject["strength"]?.jsonPrimitive?.int
+        XiaomiMiIoClient.sendCommand(ipAddress, token) {
+            put("id", 1)
+            put("method", "set_rgb")
+            put("params", buildJsonArray {
+                add(color)
+                add(type)
+                add(strength)
+            })
         }
     }
 }
