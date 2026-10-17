@@ -23,4 +23,5 @@ fun Application.modules() {
     configureCategoryRouter()
     configureBrandRouter()
     configureDeviceRouter()
+    configureXiaomiRouter()
 }

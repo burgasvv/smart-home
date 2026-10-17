@@ -192,6 +192,7 @@ class DeviceEntity(id: EntityID<Uuid>) : UuidEntity(id), Dao, Creator<DeviceRequ
     var inProgress by DeviceTable.inProgress
     var ipAddress by DeviceTable.ipAddress
     var port by DeviceTable.port
+    var token by DeviceTable.token
     var image by ImageEntity.optionalReferencedOn(DeviceTable.imageId)
     var createdAt by DeviceTable.createdAt
     var identities by IdentityEntity.via(IdentityDeviceTable.deviceId, IdentityDeviceTable.identityId)
@@ -204,6 +205,7 @@ class DeviceEntity(id: EntityID<Uuid>) : UuidEntity(id), Dao, Creator<DeviceRequ
         request.inProgress?.let { inProgress = it }
         request.ipAddress.takeIf { !it.isNullOrEmpty() }?.let { ipAddress = it }
         request.port?.let { port = it }
+        request.token.takeIf { !it.isNullOrEmpty() }?.let { token = it }
         createdAt = LocalDateTime.now().toKotlinLocalDateTime()
     }
 
@@ -215,12 +217,13 @@ class DeviceEntity(id: EntityID<Uuid>) : UuidEntity(id), Dao, Creator<DeviceRequ
         request.inProgress?.let { inProgress = it }
         request.ipAddress.takeIf { !it.isNullOrEmpty() }?.let { ipAddress = it }
         request.port?.let { port = it }
+        request.token.takeIf { !it.isNullOrEmpty() }?.let { token = it }
     }
 
     override suspend fun toDependency(): DeviceDependency {
         return DeviceDependency(
             id.value, category?.toDependency(), brand?.toDependency(),
-            model, specifications, inProgress, ipAddress, port, image?.toDependency(), createdAt
+            model, specifications, inProgress, ipAddress, port, token, image?.toDependency(), createdAt
         )
     }
 
@@ -234,6 +237,7 @@ class DeviceEntity(id: EntityID<Uuid>) : UuidEntity(id), Dao, Creator<DeviceRequ
             inProgress,
             ipAddress,
             port,
+            token,
             image?.toDependency(),
             createdAt,
             identities.map { it.toDependency() }

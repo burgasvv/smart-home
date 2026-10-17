@@ -119,6 +119,7 @@ object DeviceTable : UuidTable("device") {
     )
     val ipAddress = varchar("ip_address", 250).uniqueIndex().nullable()
     val port = integer("port").nullable()
+    val token = varchar("token", 250).uniqueIndex().nullable()
     val createdAt = datetime("created_at").defaultExpression(CurrentDateTime)
 }
 

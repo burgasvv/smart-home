@@ -6,6 +6,7 @@ import org.burgas.service.CategoryService
 import org.burgas.service.DeviceService
 import org.burgas.service.IdentityService
 import org.burgas.service.ImageService
+import org.burgas.service.XiaomiYeelightService
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
 import org.koin.ktor.plugin.Koin
@@ -22,6 +23,7 @@ fun Application.configureKoin() {
         singleOf(::CategoryService)
         singleOf(::BrandService)
         singleOf(::DeviceService)
+        singleOf(::XiaomiYeelightService)
     }
     install(Koin) {
         modules(module)

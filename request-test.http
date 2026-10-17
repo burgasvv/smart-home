@@ -194,3 +194,26 @@ Content-Type: application/json
     "id": "9503baf1-46bd-4d1f-8f11-c529a79a0287",
     "port": 54433
 }
+
+
+
+### Xiaomi Requests
+
+
+
+###
+POST /api/v1/xiaomi/power?deviceId=9503baf1-46bd-4d1f-8f11-c529a79a0287
+Host: localhost:8000
+Origin: http://localhost:8000
+Content-Type: application/json
+
+{
+    "power": true,
+    "type": "smooth",
+    "strength": 1000
+}
+
+###
+POST /api/v1/xiaomi/toggle?deviceId=9503baf1-46bd-4d1f-8f11-c529a79a0287
+Host: localhost:8000
+Origin: http://localhost:8000
