@@ -22,7 +22,7 @@ fun Application.configureKoin() {
         }
         singleOf(::CategoryService)
         singleOf(::BrandService)
-        singleOf(::DeviceService)
+        single { DeviceService(imageService = get<ImageService>()) }
         singleOf(::XiaomiYeelightService)
     }
     install(Koin) {

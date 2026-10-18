@@ -5,6 +5,7 @@ import io.ktor.server.application.*
 import io.ktor.server.auth.*
 import io.ktor.server.request.path
 import io.ktor.server.request.receive
+import io.ktor.server.request.receiveMultipart
 import io.ktor.server.response.respond
 import io.ktor.server.routing.*
 import io.ktor.server.sessions.get
@@ -27,7 +28,8 @@ fun Application.configureDeviceRouter() {
         on(AuthenticationChecked) { call ->
             when(call.request.path()) {
 
-                "/api/v1/devices/by-id", "/api/v1/devices/delete" -> {
+                "/api/v1/devices/by-id", "/api/v1/devices/delete",
+                "/api/v1/devices/upload-image", "/api/v1/devices/remove-image" -> {
                     val authSession = call.sessions.get(AuthSession::class)
                     requireNotNull(authSession) { "Not authenticated in device interceptor by deviceId" }
 
@@ -93,6 +95,18 @@ fun Application.configureDeviceRouter() {
                 delete("/delete") {
                     val deviceId = Uuid.parse(call.parameters["deviceId"]!!)
                     deviceService.delete(deviceId)
+                    call.respond(HttpStatusCode.OK)
+                }
+
+                post("/upload-image") {
+                    val deviceId = Uuid.parse(call.parameters["deviceId"]!!)
+                    deviceService.uploadImage(deviceId, call.receiveMultipart(Long.MAX_VALUE))
+                    call.respond(HttpStatusCode.OK)
+                }
+
+                delete("/remove-image") {
+                    val deviceId = Uuid.parse(call.parameters["deviceId"]!!)
+                    deviceService.removeImage(deviceId)
                     call.respond(HttpStatusCode.OK)
                 }
             }

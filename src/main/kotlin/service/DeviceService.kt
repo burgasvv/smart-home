@@ -1,5 +1,6 @@
 package org.burgas.service
 
+import io.ktor.http.content.MultiPartData
 import org.burgas.dao.DeviceEntity
 import org.burgas.database.DatabaseConnection
 import org.burgas.dto.DeviceRequest
@@ -22,6 +23,11 @@ class DeviceService : RedisCacheHandler<DeviceResponse>, ReadService<Uuid, Devic
 
     private val redis = DatabaseConnection.redis
     private val identityService by inject<IdentityService>()
+    private val imageService: ImageService
+
+    constructor(imageService: ImageService) {
+        this.imageService = imageService
+    }
 
     override suspend fun handleCache(response: DeviceResponse) {
         val deviceKey = RedisKeys.DEVICE_KEY.format(response.id)
@@ -82,6 +88,23 @@ class DeviceService : RedisCacheHandler<DeviceResponse>, ReadService<Uuid, Devic
         val deviceEntity = readEntity(id)
         deviceEntity.image?.delete()
         deviceEntity.delete()
+        handleCache(deviceEntity.toResponse())
+    }
+
+    suspend fun uploadImage(deviceId: Uuid, multiPartData: MultiPartData) = suspendTransaction(
+        db = DatabaseConnection.postgres, transactionIsolation = Connection.TRANSACTION_READ_COMMITTED
+    ) {
+        val deviceEntity = readEntity(deviceId)
+        require(deviceEntity.image == null) { "Device image is already set" }
+        deviceEntity.image = imageService.upload(multiPartData)
+        handleCache(deviceEntity.toResponse())
+    }
+
+    suspend fun removeImage(deviceId: Uuid) = suspendTransaction(
+        db = DatabaseConnection.postgres, transactionIsolation = Connection.TRANSACTION_READ_COMMITTED
+    ) {
+        val deviceEntity = readEntity(deviceId)
+        deviceEntity.image!!.delete()
         handleCache(deviceEntity.toResponse())
     }
 }
