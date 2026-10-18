@@ -8,7 +8,7 @@ class XiaomiYeelightService {
     suspend fun setPower(ipAddress: String, token: String, jsonObject: JsonObject) {
         val power = jsonObject["power"]!!.jsonPrimitive.boolean
         val type = jsonObject["type"]?.jsonPrimitive?.content
-        val strength = jsonObject["strength"]?.jsonPrimitive?.int
+        val strength = jsonObject["strength"]?.jsonPrimitive?.int?.coerceIn(1, 1000)
         XiaomiMiIoClient.sendCommand(ipAddress, token) {
             put("id", 1)
             put("method", "set_power")
@@ -29,9 +29,9 @@ class XiaomiYeelightService {
     }
 
     suspend fun setBright(ipAddress: String, token: String, jsonObject: JsonObject) {
-        val bright = jsonObject["bright"]!!.jsonPrimitive.int
+        val bright = jsonObject["bright"]!!.jsonPrimitive.int.coerceIn(1, 100)
         val type = jsonObject["type"]?.jsonPrimitive?.content
-        val strength = jsonObject["strength"]?.jsonPrimitive?.int
+        val strength = jsonObject["strength"]?.jsonPrimitive?.int?.coerceIn(1, 1000)
         XiaomiMiIoClient.sendCommand(ipAddress, token) {
             put("id", 1)
             put("method", "set_bright")
@@ -44,9 +44,9 @@ class XiaomiYeelightService {
     }
 
     suspend fun setTemperature(ipAddress: String, token: String, jsonObject: JsonObject) {
-        val temperature = jsonObject["temperature"]!!.jsonPrimitive.int
+        val temperature = jsonObject["temperature"]!!.jsonPrimitive.int.coerceIn(1700, 6500)
         val type = jsonObject["type"]?.jsonPrimitive?.content
-        val strength = jsonObject["strength"]?.jsonPrimitive?.int
+        val strength = jsonObject["strength"]?.jsonPrimitive?.int?.coerceIn(1, 1000)
         XiaomiMiIoClient.sendCommand(ipAddress, token) {
             put("id", 1)
             put("method", "set_ct_abx")
