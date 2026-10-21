@@ -113,6 +113,17 @@ Content-Type: application/json
 }
 
 ###
+POST /api/v1/categories/create
+Host: localhost:8000
+Origin: http://localhost:8000
+Content-Type: application/json
+
+{
+    "name": "Большая языковая модлель",
+    "description": "Описание категории Большая языковая модель"
+}
+
+###
 PUT /api/v1/categories/update
 Host: localhost:8000
 Origin: http://localhost:8000
@@ -145,7 +156,7 @@ Content-Type: application/json
 
 {
     "name": "Yandex",
-    "description": "Описание бренда Yandex Technologies"
+    "description": "Описание бренда Yandex"
 }
 
 ###
@@ -176,11 +187,11 @@ Origin: http://localhost:8000
 Content-Type: application/json
 
 {
-    "categoryId": "f555a493-3579-4af7-bfdc-b4150da131ea",
-    "brandId": "27febd49-7fb3-4772-b5f2-670dab1c174a",
+    "categoryId": "0efe3cea-c5f3-472a-9252-7858fc68598c",
+    "brandId": "fe684089-b008-4143-accb-4bf6a4be3f20",
     "identityId": "2f0ade39-17cb-49d3-bc7f-fbc89972312a",
-    "model": "M5-V6",
-    "specifications": "Спецификации и характеристики умной лампочки M5-V6",
+    "model": "Alisa Station",
+    "specifications": "Спецификации и характеристики LLM model Alisa Station",
     "inProgress": true
 }
 
@@ -191,8 +202,9 @@ Origin: http://localhost:8000
 Content-Type: application/json
 
 {
-    "id": "9503baf1-46bd-4d1f-8f11-c529a79a0287",
-    "port": 54433
+    "id": "c3ea6648-9907-469a-bee1-97c62df29558",
+    "ipAddress": "192.168.0.137",
+    "port": 1961
 }
 
 
