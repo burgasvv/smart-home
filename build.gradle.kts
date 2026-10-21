@@ -43,6 +43,8 @@ dependencies {
     implementation("io.insert-koin:koin-ktor:4.2.2")
     implementation("io.insert-koin:koin-logger-slf4j:4.2.2")
     implementation("io.ktor:ktor-network:3.6.0")
+    implementation("io.ktor:ktor-server-swagger:3.6.0")
+    implementation("io.ktor:ktor-server-routing-openapi:3.6.0")
 
     testImplementation(kotlin("test"))
     testImplementation(ktorLibs.server.testHost)

@@ -6,6 +6,7 @@ import org.burgas.koin.configureKoin
 import org.burgas.router.*
 import org.burgas.security.configureSecurity
 import org.burgas.serialization.configureSerialization
+import org.burgas.swagger.configureSwagger
 
 fun main(args: Array<String>) {
     io.ktor.server.netty.EngineMain.main(args)
@@ -24,4 +25,6 @@ fun Application.modules() {
     configureBrandRouter()
     configureDeviceRouter()
     configureXiaomiRouter()
+
+    configureSwagger()
 }

@@ -1,0 +1,979 @@
+
+openapi: "3.1.0"
+info:
+  title: "smart_home API"
+  description: "smart_home API"
+  version: "1.0.0"
+servers:
+  - url: "http://localhost:8000"
+paths:
+  /api/v1/images/by-id:
+    get:
+      description: ""
+      parameters:
+        - name: "imageId"
+          in: "query"
+          required: false
+          schema:
+            type: "string"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            text/plain:
+              schema:
+                type: "string"
+                format: "byte"
+  /api/v1/security/login:
+    post:
+      description: ""
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AuthData"
+        required: true
+      responses:
+        "400":
+          description: "Bad Request"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ExceptionResponse"
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                type: "string"
+              examples:
+                Example#1:
+                  value: "You successfully logged in"
+  /api/v1/security/logout:
+    post:
+      description: ""
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                type: "string"
+              examples:
+                Example#1:
+                  value: "You successfully logged out"
+  /api/v1/identities:
+    get:
+      description: ""
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                type: "array"
+                items:
+                  $ref: "#/components/schemas/IdentityResponse"
+  /api/v1/identities/by-id:
+    get:
+      description: ""
+      parameters:
+        - name: "identityId"
+          in: "query"
+          required: false
+          schema:
+            type: "string"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/IdentityResponse"
+  /api/v1/identities/change-password:
+    put:
+      description: ""
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/IdentityRequest"
+        required: true
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                type: "object"
+  /api/v1/identities/change-status:
+    put:
+      description: ""
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/IdentityRequest"
+        required: true
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                type: "object"
+  /api/v1/identities/create:
+    post:
+      description: ""
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/IdentityRequest"
+        required: true
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/IdentityResponse"
+  /api/v1/identities/delete:
+    post:
+      description: ""
+      parameters:
+        - name: "identityId"
+          in: "query"
+          required: false
+          schema:
+            type: "string"
+      responses:
+        "302":
+          description: "Found <br> Redirect"
+          content:
+            text/plain:
+              schema:
+                type: "string"
+              examples:
+                Example#1:
+                  value: "/api/v1/security/logout"
+  /api/v1/identities/remove-image:
+    delete:
+      description: ""
+      parameters:
+        - name: "identityId"
+          in: "query"
+          required: false
+          schema:
+            type: "string"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                type: "object"
+  /api/v1/identities/update:
+    put:
+      description: ""
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/IdentityRequest"
+        required: true
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/IdentityResponse"
+  /api/v1/identities/upload-image:
+    post:
+      description: ""
+      parameters:
+        - name: "identityId"
+          in: "query"
+          required: false
+          schema:
+            type: "string"
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                image:
+                  type: string
+                  format: binary
+                  description: Файл изображения для загрузки
+                description:
+                  type: string
+                  description: Описание изображения
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                type: "object"
+  /api/v1/categories:
+    get:
+      description: ""
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                type: "array"
+                items:
+                  $ref: "#/components/schemas/CategoryResponse"
+  /api/v1/categories/by-id:
+    get:
+      description: ""
+      parameters:
+        - name: "categoryId"
+          in: "query"
+          required: false
+          schema:
+            type: "string"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/CategoryResponse"
+  /api/v1/categories/create:
+    post:
+      description: ""
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CategoryRequest"
+        required: true
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/CategoryResponse"
+  /api/v1/categories/delete:
+    delete:
+      description: ""
+      parameters:
+        - name: "categoryId"
+          in: "query"
+          required: false
+          schema:
+            type: "string"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                type: "object"
+  /api/v1/categories/update:
+    put:
+      description: ""
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CategoryRequest"
+        required: true
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/CategoryResponse"
+  /api/v1/brands:
+    get:
+      description: ""
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                type: "array"
+                items:
+                  $ref: "#/components/schemas/BrandResponse"
+  /api/v1/brands/by-id:
+    get:
+      description: ""
+      parameters:
+        - name: "brandId"
+          in: "query"
+          required: false
+          schema:
+            type: "string"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/BrandResponse"
+  /api/v1/brands/create:
+    post:
+      description: ""
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/BrandRequest"
+        required: true
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/BrandResponse"
+  /api/v1/brands/delete:
+    delete:
+      description: ""
+      parameters:
+        - name: "brandId"
+          in: "query"
+          required: false
+          schema:
+            type: "string"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                type: "object"
+  /api/v1/brands/update:
+    put:
+      description: ""
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/BrandRequest"
+        required: true
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/BrandResponse"
+  /api/v1/devices/by-id:
+    get:
+      description: ""
+      parameters:
+        - name: "deviceId"
+          in: "query"
+          required: false
+          schema:
+            type: "string"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/DeviceResponse"
+  /api/v1/devices/create:
+    post:
+      description: ""
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DeviceRequest"
+        required: true
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/DeviceResponse"
+  /api/v1/devices/delete:
+    delete:
+      description: ""
+      parameters:
+        - name: "deviceId"
+          in: "query"
+          required: false
+          schema:
+            type: "string"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                type: "object"
+  /api/v1/devices/remove-image:
+    delete:
+      description: ""
+      parameters:
+        - name: "deviceId"
+          in: "query"
+          required: false
+          schema:
+            type: "string"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                type: "object"
+  /api/v1/devices/update:
+    put:
+      description: ""
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DeviceRequest"
+        required: true
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/DeviceResponse"
+  /api/v1/devices/upload-image:
+    post:
+      description: ""
+      parameters:
+        - name: "deviceId"
+          in: "query"
+          required: false
+          schema:
+            type: "string"
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                image:
+                  type: string
+                  format: binary
+                  description: Файл изображения для загрузки
+                description:
+                  type: string
+                  description: Описание изображения
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                type: "object"
+  /api/v1/xiaomi/bright:
+    post:
+      description: ""
+      parameters:
+        - name: "deviceId"
+          in: "query"
+          required: false
+          schema:
+            type: "string"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/JsonObject"
+        required: true
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                type: "object"
+  /api/v1/xiaomi/power:
+    post:
+      description: ""
+      parameters:
+        - name: "deviceId"
+          in: "query"
+          required: false
+          schema:
+            type: "string"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/JsonObject"
+        required: true
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                type: "object"
+  /api/v1/xiaomi/rgb:
+    post:
+      description: ""
+      parameters:
+        - name: "deviceId"
+          in: "query"
+          required: false
+          schema:
+            type: "string"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/JsonObject"
+        required: true
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                type: "object"
+  /api/v1/xiaomi/temperature:
+    post:
+      description: ""
+      parameters:
+        - name: "deviceId"
+          in: "query"
+          required: false
+          schema:
+            type: "string"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/JsonObject"
+        required: true
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                type: "object"
+  /api/v1/xiaomi/toggle:
+    post:
+      description: ""
+      parameters:
+        - name: "deviceId"
+          in: "query"
+          required: false
+          schema:
+            type: "string"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                type: "object"
+
+security:
+  - OriginHeader: []
+
+components:
+  securitySchemes:
+    OriginHeader:
+      type: apiKey
+      in: header
+      name: Origin
+      description: "Нажмите Authorize и вставьте: http://localhost:8000"
+  schemas:
+    ExceptionResponse:
+      type: "object"
+      properties:
+        status:
+          type: "string"
+        code:
+          type: "integer"
+          format: "int32"
+        message:
+          type: "string"
+          nullable: true
+      required:
+        - "status"
+        - "code"
+    AuthData:
+      type: "object"
+      properties:
+        email:
+          type: "string"
+        password:
+          type: "string"
+      required:
+        - "email"
+        - "password"
+    Uuid:
+      type: "object"
+      properties:
+        mostSignificantBits:
+          type: "integer"
+          format: "int64"
+        leastSignificantBits:
+          type: "integer"
+          format: "int64"
+      required:
+        - "mostSignificantBits"
+        - "leastSignificantBits"
+    ImageDependency:
+      type: "object"
+      properties:
+        id:
+          $ref: "#/components/schemas/Uuid"
+        name:
+          type: "string"
+          nullable: true
+        contentType:
+          type: "string"
+        createdAt:
+          type: "string"
+          format: "date-time"
+      required:
+        - "id"
+        - "contentType"
+        - "createdAt"
+    CategoryDependency:
+      type: "object"
+      properties:
+        id:
+          $ref: "#/components/schemas/Uuid"
+        name:
+          type: "string"
+        description:
+          type: "string"
+        createdAt:
+          type: "string"
+          format: "date-time"
+      required:
+        - "id"
+        - "name"
+        - "description"
+        - "createdAt"
+    BrandDependency:
+      type: "object"
+      properties:
+        id:
+          $ref: "#/components/schemas/Uuid"
+        name:
+          type: "string"
+        description:
+          type: "string"
+        createdAt:
+          type: "string"
+          format: "date-time"
+      required:
+        - "id"
+        - "name"
+        - "description"
+        - "createdAt"
+    DeviceDependency:
+      type: "object"
+      properties:
+        id:
+          $ref: "#/components/schemas/Uuid"
+        category:
+          nullable: true
+          $ref: "#/components/schemas/CategoryDependency"
+        brand:
+          nullable: true
+          $ref: "#/components/schemas/BrandDependency"
+        model:
+          type: "string"
+        specifications:
+          type: "string"
+        inProgress:
+          type: "boolean"
+        ipAddress:
+          type: "string"
+          nullable: true
+        port:
+          type: "integer"
+          format: "int32"
+          nullable: true
+        token:
+          type: "string"
+          nullable: true
+        image:
+          nullable: true
+          $ref: "#/components/schemas/ImageDependency"
+        createdAt:
+          type: "string"
+          format: "date-time"
+      required:
+        - "id"
+        - "model"
+        - "specifications"
+        - "inProgress"
+        - "createdAt"
+    IdentityResponse:
+      type: "object"
+      properties:
+        id:
+          $ref: "#/components/schemas/Uuid"
+        authority:
+          type: "string"
+          enum:
+            - "ADMIN"
+            - "USER"
+        email:
+          type: "string"
+        status:
+          type: "boolean"
+        firstname:
+          type: "string"
+        lastname:
+          type: "string"
+        patronymic:
+          type: "string"
+        image:
+          nullable: true
+          $ref: "#/components/schemas/ImageDependency"
+        createdAt:
+          type: "string"
+          format: "date-time"
+        devices:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/DeviceDependency"
+      required:
+        - "id"
+        - "authority"
+        - "email"
+        - "status"
+        - "firstname"
+        - "lastname"
+        - "patronymic"
+        - "createdAt"
+        - "devices"
+    IdentityRequest:
+      type: "object"
+      properties:
+        id:
+          nullable: true
+          $ref: "#/components/schemas/Uuid"
+        authority:
+          type: "string"
+          nullable: true
+          enum:
+            - "ADMIN"
+            - "USER"
+        email:
+          type: "string"
+          nullable: true
+        password:
+          type: "string"
+          nullable: true
+        status:
+          type: "boolean"
+          nullable: true
+        firstname:
+          type: "string"
+          nullable: true
+        lastname:
+          type: "string"
+          nullable: true
+        patronymic:
+          type: "string"
+          nullable: true
+    CategoryResponse:
+      type: "object"
+      properties:
+        id:
+          $ref: "#/components/schemas/Uuid"
+        name:
+          type: "string"
+        description:
+          type: "string"
+        createdAt:
+          type: "string"
+          format: "date-time"
+        devices:
+          type: "array"
+          nullable: true
+          items:
+            $ref: "#/components/schemas/DeviceDependency"
+      required:
+        - "id"
+        - "name"
+        - "description"
+        - "createdAt"
+    CategoryRequest:
+      type: "object"
+      properties:
+        id:
+          nullable: true
+          $ref: "#/components/schemas/Uuid"
+        name:
+          type: "string"
+          nullable: true
+        description:
+          type: "string"
+          nullable: true
+    BrandResponse:
+      type: "object"
+      properties:
+        id:
+          $ref: "#/components/schemas/Uuid"
+        name:
+          type: "string"
+        description:
+          type: "string"
+        createdAt:
+          type: "string"
+          format: "date-time"
+        devices:
+          type: "array"
+          nullable: true
+          items:
+            $ref: "#/components/schemas/DeviceDependency"
+      required:
+        - "id"
+        - "name"
+        - "description"
+        - "createdAt"
+    BrandRequest:
+      type: "object"
+      properties:
+        id:
+          nullable: true
+          $ref: "#/components/schemas/Uuid"
+        name:
+          type: "string"
+          nullable: true
+        description:
+          type: "string"
+          nullable: true
+    IdentityDependency:
+      type: "object"
+      properties:
+        id:
+          $ref: "#/components/schemas/Uuid"
+        authority:
+          type: "string"
+          enum:
+            - "ADMIN"
+            - "USER"
+        email:
+          type: "string"
+        status:
+          type: "boolean"
+        firstname:
+          type: "string"
+        lastname:
+          type: "string"
+        patronymic:
+          type: "string"
+        image:
+          nullable: true
+          $ref: "#/components/schemas/ImageDependency"
+        createdAt:
+          type: "string"
+          format: "date-time"
+      required:
+        - "id"
+        - "authority"
+        - "email"
+        - "status"
+        - "firstname"
+        - "lastname"
+        - "patronymic"
+        - "createdAt"
+    DeviceResponse:
+      type: "object"
+      properties:
+        id:
+          $ref: "#/components/schemas/Uuid"
+        category:
+          nullable: true
+          $ref: "#/components/schemas/CategoryDependency"
+        brand:
+          nullable: true
+          $ref: "#/components/schemas/BrandDependency"
+        model:
+          type: "string"
+        specifications:
+          type: "string"
+        inProgress:
+          type: "boolean"
+        ipAddress:
+          type: "string"
+          nullable: true
+        port:
+          type: "integer"
+          format: "int32"
+          nullable: true
+        token:
+          type: "string"
+          nullable: true
+        image:
+          nullable: true
+          $ref: "#/components/schemas/ImageDependency"
+        createdAt:
+          type: "string"
+          format: "date-time"
+        identities:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/IdentityDependency"
+      required:
+        - "id"
+        - "model"
+        - "specifications"
+        - "inProgress"
+        - "createdAt"
+        - "identities"
+    DeviceRequest:
+      type: "object"
+      properties:
+        id:
+          nullable: true
+          $ref: "#/components/schemas/Uuid"
+        categoryId:
+          nullable: true
+          $ref: "#/components/schemas/Uuid"
+        brandId:
+          nullable: true
+          $ref: "#/components/schemas/Uuid"
+        identityId:
+          nullable: true
+          $ref: "#/components/schemas/Uuid"
+        model:
+          type: "string"
+          nullable: true
+        specifications:
+          type: "string"
+          nullable: true
+        inProgress:
+          type: "boolean"
+          nullable: true
+        ipAddress:
+          type: "string"
+          nullable: true
+        port:
+          type: "integer"
+          format: "int32"
+          nullable: true
+        token:
+          type: "string"
+          nullable: true
+    JsonObject:
+      type: "object"
+      properties: { }
